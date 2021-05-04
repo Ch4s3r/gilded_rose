@@ -7,9 +7,15 @@ class GildedRoseTest {
 
     @Test
     fun foo() {
-        val items = arrayOf(Item("foo", 0, 0))
+        val expected = "foo"
+        val items = arrayOf(
+            Item(expected, 0, 0),
+        )
         val app = GildedRose(items)
+
         app.updateQuality()
-        assertEquals("foo", app.items[0].name)
+
+        val actual = app.items.first().name
+        assertEquals(expected, actual)
     }
 }
