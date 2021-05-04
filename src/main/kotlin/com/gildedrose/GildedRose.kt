@@ -9,56 +9,62 @@ const val MAX_QUALITY = 50
 class GildedRose(var items: Array<Item>) {
 
     fun updateQuality() {
-        items.forEach { updateItem(it) }
+        items = items
+            .map(Item::toProduct)
+            .map(this::updateProduct)
+            .map(Product::toItem)
+            .toTypedArray()
     }
 
-    private fun updateItem(item: Item) {
-        if (item.name != AGED_BRIE && item.name != BACKSTAGE_PASS_TAFKAL) {
-            if (item.quality > 0) {
-                if (item.name != SULFURAS) {
-                    item.quality = item.quality - 1
+    private fun updateProduct(product: Product): Product {
+        var product = product
+        if (product.name != AGED_BRIE && product.name != BACKSTAGE_PASS_TAFKAL) {
+            if (product.quality > 0) {
+                if (product.name != SULFURAS) {
+                    product = product.copy(quality = product.quality - 1)
                 }
             }
         } else {
-            if (item.quality < MAX_QUALITY) {
-                item.quality += 1
+            if (product.quality < MAX_QUALITY) {
+                product = product.copy(quality = product.quality + 1)
 
-                if (item.name == BACKSTAGE_PASS_TAFKAL) {
-                    if (item.sellIn < 11) {
-                        if (item.quality < MAX_QUALITY) {
-                            item.quality += 1
+                if (product.name == BACKSTAGE_PASS_TAFKAL) {
+                    if (product.sellIn < 11) {
+                        if (product.quality < MAX_QUALITY) {
+                            product = product.copy(quality = product.quality + 1)
                         }
                     }
 
-                    if (item.sellIn < 6) {
-                        if (item.quality < MAX_QUALITY) {
-                            item.quality += 1
+                    if (product.sellIn < 6) {
+                        if (product.quality < MAX_QUALITY) {
+                            product = product.copy(quality = product.quality + 1)
                         }
                     }
                 }
             }
         }
 
-        if (item.name != SULFURAS) {
-            item.sellIn = item.sellIn - 1
+        if (product.name != SULFURAS) {
+            product = product.copy(sellIn = product.sellIn - 1)
         }
 
-        if (item.sellIn < 0) {
-            if (item.name != AGED_BRIE) {
-                if (item.name != BACKSTAGE_PASS_TAFKAL) {
-                    if (item.quality > 0) {
-                        if (item.name != SULFURAS) {
-                            item.quality = item.quality - 1
+        if (product.sellIn < 0) {
+            if (product.name != AGED_BRIE) {
+                if (product.name != BACKSTAGE_PASS_TAFKAL) {
+                    if (product.quality > 0) {
+                        if (product.name != SULFURAS) {
+                            product = product.copy(quality = product.quality - 1)
                         }
                     }
                 } else {
-                    item.quality = 0
+                    product = product.copy(quality = 0)
                 }
             } else {
-                if (item.quality < MAX_QUALITY) {
-                    item.quality += 1
+                if (product.quality < MAX_QUALITY) {
+                    product = product.copy(quality = product.quality + 1)
                 }
             }
         }
+        return product
     }
 }

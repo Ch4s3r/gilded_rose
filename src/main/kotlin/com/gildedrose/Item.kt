@@ -7,11 +7,21 @@ open class Item(var name: String, var sellIn: Int, var quality: Int) {
 }
 
 data class Product(
-    private val item: Item,
-) {
-    val name by item::name
-    val sellIn by item::sellIn
-    val quality by item::quality
+    val name: String,
+    val sellIn: Int,
+    val quality: Int,
+)
 
-    override fun toString() = item.toString()
-}
+fun Item.toProduct() =
+    Product(
+        name = this.name,
+        sellIn = this.sellIn,
+        quality = this.quality,
+    )
+
+fun Product.toItem() =
+    Item(
+        name = this.name,
+        sellIn = this.sellIn,
+        quality = this.quality,
+    )
