@@ -3,7 +3,7 @@ package com.gildedrose
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-internal class GildedRoseTest {
+class GildedRoseTest {
 
     @Test
     fun foo() {
