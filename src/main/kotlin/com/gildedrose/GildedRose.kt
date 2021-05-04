@@ -9,52 +9,54 @@ const val MAX_QUALITY = 50
 class GildedRose(var items: Array<Item>) {
 
     fun updateQuality() {
-        items.forEach { current ->
-            if (current.name != AGED_BRIE && current.name != BACKSTAGE_PASS_TAFKAL) {
-                if (current.quality > 0) {
-                    if (current.name != SULFURAS) {
-                        current.quality = current.quality - 1
-                    }
+        items.forEach { updateItem(it) }
+    }
+
+    private fun updateItem(item: Item) {
+        if (item.name != AGED_BRIE && item.name != BACKSTAGE_PASS_TAFKAL) {
+            if (item.quality > 0) {
+                if (item.name != SULFURAS) {
+                    item.quality = item.quality - 1
                 }
-            } else {
-                if (current.quality < MAX_QUALITY) {
-                    current.quality += 1
+            }
+        } else {
+            if (item.quality < MAX_QUALITY) {
+                item.quality += 1
 
-                    if (current.name == BACKSTAGE_PASS_TAFKAL) {
-                        if (current.sellIn < 11) {
-                            if (current.quality < MAX_QUALITY) {
-                                current.quality += 1
-                            }
+                if (item.name == BACKSTAGE_PASS_TAFKAL) {
+                    if (item.sellIn < 11) {
+                        if (item.quality < MAX_QUALITY) {
+                            item.quality += 1
                         }
+                    }
 
-                        if (current.sellIn < 6) {
-                            if (current.quality < MAX_QUALITY) {
-                                current.quality += 1
-                            }
+                    if (item.sellIn < 6) {
+                        if (item.quality < MAX_QUALITY) {
+                            item.quality += 1
                         }
                     }
                 }
             }
+        }
 
-            if (current.name != SULFURAS) {
-                current.sellIn = current.sellIn - 1
-            }
+        if (item.name != SULFURAS) {
+            item.sellIn = item.sellIn - 1
+        }
 
-            if (current.sellIn < 0) {
-                if (current.name != AGED_BRIE) {
-                    if (current.name != BACKSTAGE_PASS_TAFKAL) {
-                        if (current.quality > 0) {
-                            if (current.name != SULFURAS) {
-                                current.quality = current.quality - 1
-                            }
+        if (item.sellIn < 0) {
+            if (item.name != AGED_BRIE) {
+                if (item.name != BACKSTAGE_PASS_TAFKAL) {
+                    if (item.quality > 0) {
+                        if (item.name != SULFURAS) {
+                            item.quality = item.quality - 1
                         }
-                    } else {
-                        current.quality = 0
                     }
                 } else {
-                    if (current.quality < MAX_QUALITY) {
-                        current.quality += 1
-                    }
+                    item.quality = 0
+                }
+            } else {
+                if (item.quality < MAX_QUALITY) {
+                    item.quality += 1
                 }
             }
         }

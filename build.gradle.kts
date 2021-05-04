@@ -29,8 +29,9 @@ tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-tasks.getByName("test").finalizedBy("pitest")
+// tasks.getByName("test").finalizedBy("pitest")
 
 pitest {
     junit5PluginVersion.set("0.12")
+    mutators.set(listOf("ALL"))
 }
