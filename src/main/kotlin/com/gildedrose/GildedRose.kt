@@ -4,11 +4,12 @@ import com.gildedrose.ItemNames.AGED_BRIE
 import com.gildedrose.ItemNames.BACKSTAGE_PASS_TAFKAL
 import com.gildedrose.ItemNames.SULFURAS
 
+const val MAX_QUALITY = 50
+
 class GildedRose(var items: Array<Item>) {
 
     fun updateQuality() {
-        for (i in items.indices) {
-            val current = items[i]
+        items.forEach { current ->
             if (current.name != AGED_BRIE && current.name != BACKSTAGE_PASS_TAFKAL) {
                 if (current.quality > 0) {
                     if (current.name != SULFURAS) {
@@ -16,19 +17,19 @@ class GildedRose(var items: Array<Item>) {
                     }
                 }
             } else {
-                if (current.quality < 50) {
-                    current.quality = current.quality + 1
+                if (current.quality < MAX_QUALITY) {
+                    current.quality += 1
 
                     if (current.name == BACKSTAGE_PASS_TAFKAL) {
                         if (current.sellIn < 11) {
-                            if (current.quality < 50) {
-                                current.quality = current.quality + 1
+                            if (current.quality < MAX_QUALITY) {
+                                current.quality += 1
                             }
                         }
 
                         if (current.sellIn < 6) {
-                            if (current.quality < 50) {
-                                current.quality = current.quality + 1
+                            if (current.quality < MAX_QUALITY) {
+                                current.quality += 1
                             }
                         }
                     }
@@ -48,11 +49,11 @@ class GildedRose(var items: Array<Item>) {
                             }
                         }
                     } else {
-                        current.quality = current.quality - current.quality
+                        current.quality = 0
                     }
                 } else {
-                    if (current.quality < 50) {
-                        current.quality = current.quality + 1
+                    if (current.quality < MAX_QUALITY) {
+                        current.quality += 1
                     }
                 }
             }
