@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.4.0"
+    id("info.solidsoft.pitest") version "1.5.1"
 }
 
 group = "com.gildedrose"
@@ -26,4 +27,10 @@ tasks.test {
 // config JVM target to 1.8 for kotlin compilation tasks
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+tasks.getByName("test").finalizedBy("pitest")
+
+pitest {
+    junit5PluginVersion.set("0.12")
 }

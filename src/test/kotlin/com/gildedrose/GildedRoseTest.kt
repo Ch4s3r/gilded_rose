@@ -168,4 +168,25 @@ class GildedRoseTest {
 
         assertEquals(18, app.items.first().quality)
     }
+
+    @ParameterizedTest
+    @CsvSource(
+        "5, 48,50",
+        "5, 49,50",
+        "5, 50,50",
+        "10,48,50",
+        "10,49,50",
+        "10,50,50",
+        "15,48,49",
+        "15,49,50",
+        "15,50,50",
+    )
+    fun `Backstage pass edge case`(sellIn: Int, quality: Int, expectedQuality: Int) {
+        val item = Item(BACKSTAGE_PASS_TAFKAL, sellIn, quality)
+        val app = GildedRose(arrayOf(item))
+
+        app.updateQuality()
+
+        assertEquals(expectedQuality, app.items.first().quality)
+    }
 }
