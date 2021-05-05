@@ -1,7 +1,6 @@
 package com.gildedrose
 
 import com.gildedrose.ItemNames.AGED_BRIE
-import com.gildedrose.ItemNames.BACKSTAGE_PASS_TAFKAL
 import com.gildedrose.ItemNames.SULFURAS
 
 const val MIN_QUALITY = 0
@@ -52,7 +51,11 @@ class AgedBrieStrategy : TestableUpdateStrategy {
         product.name == AGED_BRIE
 
     override fun update(product: Product): Product {
-        TODO("Not yet implemented: $AGED_BRIE")
+        var product = product.increaseQuality()
+        product = product.copy(sellIn = product.sellIn - 1)
+        if (product.expired)
+            product = product.increaseQuality()
+        return product
     }
 }
 
@@ -62,7 +65,19 @@ class BackStagePassStrategy : TestableUpdateStrategy {
         product.name.startsWith("Backstage passes")
 
     override fun update(product: Product): Product {
-        TODO("Not yet implemented: $BACKSTAGE_PASS_TAFKAL")
+        var product = product.increaseQuality()
+        val qualityIncrease = when {
+            product.sellIn < 6 -> 2
+            product.sellIn < 11 -> 1
+            else -> 0
+        }
+        repeat(qualityIncrease) {
+            product = product.increaseQuality()
+        }
+        product = product.copy(sellIn = product.sellIn - 1)
+        if (product.expired)
+            product = product.copy(quality = 0)
+        return product
     }
 }
 
@@ -72,14 +87,18 @@ class SulfurasStrategy : TestableUpdateStrategy {
         product.name == SULFURAS
 
     override fun update(product: Product): Product {
-        TODO("Not yet implemented: $SULFURAS")
+        return product
     }
 }
 
 class DefaultUpdateStrategy : UpdateStrategy {
 
     override fun update(product: Product): Product {
-        return product.decreaseQuality()
+        var product = product.decreaseQuality()
+        product = product.copy(sellIn = product.sellIn - 1)
+        if (product.expired)
+            product = product.decreaseQuality()
+        return product
     }
 }
 
@@ -96,50 +115,10 @@ class GildedRose(var items: Array<Item>) {
     fun updateQuality() {
         items = items
             .map(Item::toProduct)
-//            .map { product ->
-//                (strategies.firstOrNull { it.test(product) } ?: defaultUpdateStrategy).update(product)
-//            }
-            .map(this::updateProduct)
+            .map { product ->
+                (strategies.firstOrNull { it.test(product) } ?: defaultUpdateStrategy).update(product)
+            }
             .map(Product::toItem)
             .toTypedArray()
-    }
-
-    private fun updateProduct(product: Product): Product {
-        var product = product
-
-        if (product.name == AGED_BRIE) {
-            product = product.increaseQuality()
-            product = product.copy(sellIn = product.sellIn - 1)
-            if (product.expired)
-                product = product.increaseQuality()
-            return product
-        }
-
-        if (product.name == BACKSTAGE_PASS_TAFKAL) {
-            product = product.increaseQuality()
-            val qualityIncrease = when {
-                product.sellIn < 6 -> 2
-                product.sellIn < 11 -> 1
-                else -> 0
-            }
-            repeat(qualityIncrease) {
-                product = product.increaseQuality()
-            }
-            product = product.copy(sellIn = product.sellIn - 1)
-            if (product.expired)
-                product = product.copy(quality = 0)
-            return product
-        }
-
-        if (product.name == SULFURAS) {
-            return product
-        }
-
-        product = product.decreaseQuality()
-        product = product.copy(sellIn = product.sellIn - 1)
-        if (product.expired)
-            product = product.decreaseQuality()
-
-        return product
     }
 }
