@@ -5,7 +5,6 @@ import com.gildedrose.ItemNames.BACKSTAGE_PASS_TAFKAL
 import com.gildedrose.ItemNames.CONJURED_CAKE
 import com.gildedrose.ItemNames.SULFURAS
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
@@ -159,7 +158,6 @@ class GildedRoseTest {
     }
 
     @Test
-    @Disabled
     fun `'Conjured' items degrade in Quality twice as fast as normal items`() {
         val item = Item(CONJURED_CAKE, ANY_SELLIN, 20)
         val app = GildedRose(arrayOf(item))
@@ -167,6 +165,16 @@ class GildedRoseTest {
         app.updateQuality()
 
         assertEquals(18, app.items.first().quality)
+    }
+
+    @Test
+    fun `'Conjured' items degrade in Quality twice as fast as normal items if expired`() {
+        val item = Item(CONJURED_CAKE, 0, 20)
+        val app = GildedRose(arrayOf(item))
+
+        app.updateQuality()
+
+        assertEquals(16, app.items.first().quality)
     }
 
     @ParameterizedTest

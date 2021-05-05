@@ -2,14 +2,15 @@ package com.gildedrose
 
 import com.gildedrose.strategies.AgedBrieStrategy
 import com.gildedrose.strategies.BackStagePassStrategy
+import com.gildedrose.strategies.ConjuredStrategy
 import com.gildedrose.strategies.DefaultUpdateStrategy
 import com.gildedrose.strategies.SulfurasStrategy
-import com.gildedrose.strategies.TestableUpdateStrategy
 
-private val strategies = listOf<TestableUpdateStrategy>(
+private val strategies = listOf(
     AgedBrieStrategy(),
     BackStagePassStrategy(),
     SulfurasStrategy(),
+    ConjuredStrategy(),
 )
 
 private val defaultUpdateStrategy = DefaultUpdateStrategy()

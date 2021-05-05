@@ -1,5 +1,6 @@
 package com.gildedrose.strategies
 
+import com.gildedrose.BACKSTAGE_PASSES
 import com.gildedrose.MAX_QUALITY
 import com.gildedrose.MIN_QUALITY
 import com.gildedrose.Product
@@ -8,7 +9,7 @@ import com.gildedrose.expired
 class BackStagePassStrategy : TestableUpdateStrategy {
 
     override fun test(product: Product) =
-        product.name.startsWith("Backstage passes")
+        product.name.startsWith(BACKSTAGE_PASSES)
 
     override fun update(product: Product): Product {
         val quality = when {

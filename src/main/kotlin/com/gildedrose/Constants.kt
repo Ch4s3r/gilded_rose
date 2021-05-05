@@ -11,3 +11,6 @@ object ItemNames {
 
 const val MIN_QUALITY = 0
 const val MAX_QUALITY = 50
+
+const val CONJURED_PREFIX = "Conjured"
+const val BACKSTAGE_PASSES = "Backstage passes"
