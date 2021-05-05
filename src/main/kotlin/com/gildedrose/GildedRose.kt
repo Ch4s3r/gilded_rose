@@ -106,41 +106,40 @@ class GildedRose(var items: Array<Item>) {
 
     private fun updateProduct(product: Product): Product {
         var product = product
-        if (product.name != AGED_BRIE && product.name != BACKSTAGE_PASS_TAFKAL) {
-            if (product.name != SULFURAS) {
-                product = product.decreaseQuality()
-            }
-        } else {
+
+        if (product.name == AGED_BRIE) {
             product = product.increaseQuality()
-            if (product.name == BACKSTAGE_PASS_TAFKAL) {
-                val qualityIncrease = when {
-                    product.sellIn < 6 -> 2
-                    product.sellIn < 11 -> 1
-                    else -> 0
-                }
-                repeat(qualityIncrease) {
-                    product = product.increaseQuality()
-                }
-            }
-        }
-
-        if (product.name != SULFURAS) {
             product = product.copy(sellIn = product.sellIn - 1)
+            if (product.expired)
+                product = product.increaseQuality()
+            return product
         }
 
-        if (product.expired) {
-            if (product.name != AGED_BRIE) {
-                if (product.name != BACKSTAGE_PASS_TAFKAL) {
-                    if (product.name != SULFURAS) {
-                        product = product.decreaseQuality()
-                    }
-                } else {
-                    product = product.copy(quality = 0)
-                }
-            } else {
+        if (product.name == BACKSTAGE_PASS_TAFKAL) {
+            product = product.increaseQuality()
+            val qualityIncrease = when {
+                product.sellIn < 6 -> 2
+                product.sellIn < 11 -> 1
+                else -> 0
+            }
+            repeat(qualityIncrease) {
                 product = product.increaseQuality()
             }
+            product = product.copy(sellIn = product.sellIn - 1)
+            if (product.expired)
+                product = product.copy(quality = 0)
+            return product
         }
+
+        if (product.name == SULFURAS) {
+            return product
+        }
+
+        product = product.decreaseQuality()
+        product = product.copy(sellIn = product.sellIn - 1)
+        if (product.expired)
+            product = product.decreaseQuality()
+
         return product
     }
 }
