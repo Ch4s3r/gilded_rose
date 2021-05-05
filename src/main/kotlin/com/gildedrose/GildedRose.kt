@@ -12,14 +12,8 @@ data class Product(
     val quality: Int,
 )
 
-private fun Product.increaseQuality() =
-    this.copy(quality = if (quality < MAX_QUALITY) quality + 1 else quality)
-
-private fun Product.decreaseQuality() =
-    this.copy(quality = if (quality > MIN_QUALITY) quality - 1 else quality)
-
 private val Product.expired
-    get() = this.sellIn < 0
+    get() = this.sellIn <= 0
 
 fun Item.toProduct() =
     Product(
@@ -50,13 +44,11 @@ class AgedBrieStrategy : TestableUpdateStrategy {
     override fun test(product: Product) =
         product.name == AGED_BRIE
 
-    override fun update(product: Product): Product {
-        var product = product.increaseQuality()
-        product = product.copy(sellIn = product.sellIn - 1)
-        if (product.expired)
-            product = product.increaseQuality()
-        return product
-    }
+    override fun update(product: Product) =
+        product.copy(
+            quality = (product.quality + if (product.expired) 2 else 1).coerceIn(MIN_QUALITY, MAX_QUALITY),
+            sellIn = product.sellIn - 1
+        )
 }
 
 class BackStagePassStrategy : TestableUpdateStrategy {
@@ -65,41 +57,33 @@ class BackStagePassStrategy : TestableUpdateStrategy {
         product.name.startsWith("Backstage passes")
 
     override fun update(product: Product): Product {
-        var product = product.increaseQuality()
-        val qualityIncrease = when {
-            product.sellIn < 6 -> 2
-            product.sellIn < 11 -> 1
-            else -> 0
-        }
-        repeat(qualityIncrease) {
-            product = product.increaseQuality()
-        }
-        product = product.copy(sellIn = product.sellIn - 1)
-        if (product.expired)
-            product = product.copy(quality = 0)
-        return product
+        val quality = when {
+            product.expired -> 0
+            product.sellIn < 6 -> product.quality + 3
+            product.sellIn < 11 -> product.quality + 2
+            else -> product.quality + 1
+        }.coerceIn(MIN_QUALITY, MAX_QUALITY)
+        return product.copy(
+            quality = quality,
+            sellIn = product.sellIn - 1
+        )
     }
 }
 
 class SulfurasStrategy : TestableUpdateStrategy {
 
-    override fun test(product: Product) =
-        product.name == SULFURAS
+    override fun test(product: Product) = product.name == SULFURAS
 
-    override fun update(product: Product): Product {
-        return product
-    }
+    override fun update(product: Product) = product
 }
 
 class DefaultUpdateStrategy : UpdateStrategy {
 
-    override fun update(product: Product): Product {
-        var product = product.decreaseQuality()
-        product = product.copy(sellIn = product.sellIn - 1)
-        if (product.expired)
-            product = product.decreaseQuality()
-        return product
-    }
+    override fun update(product: Product) =
+        product.copy(
+            quality = (product.quality - if (product.expired) 2 else 1).coerceIn(MIN_QUALITY, MAX_QUALITY),
+            sellIn = product.sellIn - 1
+        )
 }
 
 class GildedRose(var items: Array<Item>) {
