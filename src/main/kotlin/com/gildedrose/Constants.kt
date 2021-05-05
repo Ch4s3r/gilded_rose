@@ -8,3 +8,6 @@ object ItemNames {
     const val ELIXIR = "Elixir of the Mongoose"
     const val CONJURED_CAKE = "Conjured Mana Cake"
 }
+
+const val MIN_QUALITY = 0
+const val MAX_QUALITY = 50
